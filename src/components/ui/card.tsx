@@ -25,7 +25,7 @@ const Card = ({ title = "style.css", text = "" }) => {
   };
 
   // Helper function to decode HTML entities like &lt; to < and &gt; to >
-  const decodeHTML = (html) => {
+  const decodeHTML = (html: string): string => {
     const txt = document.createElement("textarea");
     txt.innerHTML = html;
     return txt.value;
