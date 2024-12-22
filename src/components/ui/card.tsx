@@ -1,30 +1,33 @@
 'use client'; // Ensure this component runs client-side
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 
 const Card = ({ title = "style.css", text = "" }) => {
   const [decodedText, setDecodedText] = useState("");
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
-    // Only decode HTML entities on the client-side
     if (typeof window !== "undefined") {
       const cleanedText = text.replace(/<br\/?>/g, '\n');
       setDecodedText(decodeHTML(cleanedText));
     }
   }, [text]);
 
+  useEffect(() => {
+    // Adjust textarea height based on its content
+    if (textareaRef.current) {
+      textareaRef.current.style.height = "auto"; // Reset height
+      textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`; // Adjust height
+    }
+  }, [decodedText]);
+
   const handleCopy = () => {
     navigator.clipboard.writeText(decodedText)
-      .then(() => {
-        alert('Text copied successfully!');
-      })
-      .catch((err) => {
-        console.error('Error copying text: ', err);
-      });
+      .then(() => alert('Texte copié!'))
+      .catch((err) => console.error('Erreur durant la copie du texte: ', err));
   };
 
-  // Helper function to decode HTML entities like &lt; to < and &gt; to >
   const decodeHTML = (html: string): string => {
     const txt = document.createElement("textarea");
     txt.innerHTML = html;
@@ -52,11 +55,12 @@ const Card = ({ title = "style.css", text = "" }) => {
         </div>
         <div className="code-container">
           <textarea
+            ref={textareaRef}
             className="area"
             id="code"
             name="code"
             readOnly
-            defaultValue={decodedText}
+            value={decodedText}
           />
           <CopyButton onClick={handleCopy}>Copier le code</CopyButton>
         </div>
@@ -65,17 +69,16 @@ const Card = ({ title = "style.css", text = "" }) => {
   );
 };
 
-// Styled-components for the card and button
 const StyledWrapper = styled.div`
   .card {
-    width: 500px;
-    height: 400px;
+    width: 90%;
+    max-width: 600px;
     margin: 0 auto;
     background-color: #24233b;
     border-radius: 8px;
-    z-index: 1;
     box-shadow: 0px 10px 10px rgb(73, 70, 92);
     transition: 0.5s;
+    overflow: hidden;
   }
 
   .card:hover {
@@ -86,7 +89,7 @@ const StyledWrapper = styled.div`
   .top {
     display: flex;
     align-items: center;
-    padding-left: 10px;
+    padding: 10px;
   }
 
   .circle {
@@ -95,11 +98,9 @@ const StyledWrapper = styled.div`
 
   .circle2 {
     display: inline-block;
-    align-items: center;
     width: 10px;
     height: 10px;
-    padding: 1px;
-    border-radius: 5px;
+    border-radius: 50%;
   }
 
   .red {
@@ -114,12 +115,6 @@ const StyledWrapper = styled.div`
     background-color: #00ca4e;
   }
 
-  .header {
-    margin: 5px;
-    margin-top: 5px;
-    border-radius: 5px;
-  }
-
   #title2 {
     color: white;
     padding-left: 50px;
@@ -128,18 +123,22 @@ const StyledWrapper = styled.div`
 
   .code-container {
     text-align: center;
+    padding: 10px;
   }
 
   #code {
-    width: 470px;
-    height: 350px;
+    width: 100%;
+    min-height: 150px;
     resize: none;
     background-color: rgb(73, 70, 92);
     border-radius: 5px;
     border: none;
     color: white;
     padding: 10px;
+    font-family: monospace;
+    overflow-y: hidden;
   }
+
   #code:focus {
     outline: none !important;
   }
