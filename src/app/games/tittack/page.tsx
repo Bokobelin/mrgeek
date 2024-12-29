@@ -6,7 +6,7 @@ export default function Tittack() {
         <main className="flex flex-col gap-8 row-start-2 items-center">
           <div className="flex flex-col gap-4 items-center">
             <h1 className="text-5xl font-bold">Ti&apos;ttack</h1>
-            <Link href="/games/ti'ttack/downloads/ti'ttack pre-alpha 0.0.2.zip" className="text-2xl underline">Télécharger le jeu</Link>
+            <Link href="/games/ti'ttack/downloads/tittackpre-alpha0.0.2.zip" className="text-2xl underline">Télécharger le jeu</Link>
           </div>
         </main>
       </div>
